@@ -27,6 +27,7 @@ h2{font-size:16px;margin:0 0 12px;font-weight:700}
 .f label{flex:1;font-size:14px}
 .f small{display:block;color:var(--muted);font-size:12px}
 .in{display:flex;align-items:center;gap:4px}
+.conversion-rates .in{gap:8px}
 input[type=number]{width:84px;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:500 15px "Public Sans",sans-serif;text-align:right}
 select{max-width:100%;padding:7px 30px 7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:500 14px "Public Sans",sans-serif}
 input[type=number]:focus-visible,button:focus-visible,input[type=checkbox]:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
@@ -87,13 +88,43 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <div class="f"><label for="lm">Provvigione media di una locazione</label><div class="in"><input id="lm" type="number" min="0" step="10"><span class="u">€</span></div></div>
     </section>
 
-    <section class="panel">
-      <h2>Tassi di conversione</h2>
-      <div class="f"><label for="c9">Notizie → acquisizioni</label><div class="in"><input id="c9" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="c10">Acquisizioni → incarichi</label><div class="in"><input id="c10" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="c11">Visite → proposte</label><div class="in"><input id="c11" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="c12">Proposte → vendite</label><div class="in"><input id="c12" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="c13">Incarichi → vendite</label><div class="in"><input id="c13" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+    <section class="panel conversion-rates">
+      <h2>Tassi di conversione (Vendite | Affitti)</h2>
+      <div class="f">
+        <label>Notizie → acquisizioni</label>
+        <div class="in">
+          <input id="c9" type="number" min="1" max="100" step="1" title="Vendite" aria-label="Vendite: notizie ad acquisizioni"><span class="u">%</span>
+          <input id="c_na_rent" type="number" min="1" max="100" step="1" title="Affitti" aria-label="Affitti: notizie ad acquisizioni"><span class="u">%</span>
+        </div>
+      </div>
+      <div class="f">
+        <label>Acquisizioni → incarichi</label>
+        <div class="in">
+          <input id="c10" type="number" min="1" max="100" step="1" title="Vendite" aria-label="Vendite: acquisizioni a incarichi"><span class="u">%</span>
+          <input id="c_ai_rent" type="number" min="1" max="100" step="1" title="Affitti" aria-label="Affitti: acquisizioni a incarichi"><span class="u">%</span>
+        </div>
+      </div>
+      <div class="f">
+        <label>Visite → proposte</label>
+        <div class="in">
+          <input id="c11" type="number" min="1" max="100" step="1" title="Vendite" aria-label="Vendite: visite a proposte"><span class="u">%</span>
+          <input id="c_vp_rent" type="number" min="1" max="100" step="1" title="Affitti" aria-label="Affitti: visite a proposte"><span class="u">%</span>
+        </div>
+      </div>
+      <div class="f">
+        <label>Proposte → transazioni</label>
+        <div class="in">
+          <input id="c12" type="number" min="1" max="100" step="1" title="Vendite" aria-label="Vendite: proposte a transazioni"><span class="u">%</span>
+          <input id="c_pt_rent" type="number" min="1" max="100" step="1" title="Affitti" aria-label="Affitti: proposte a transazioni"><span class="u">%</span>
+        </div>
+      </div>
+      <div class="f">
+        <label>Incarichi → transazioni</label>
+        <div class="in">
+          <input id="c13" type="number" min="1" max="100" step="1" title="Vendite" aria-label="Vendite: incarichi a transazioni"><span class="u">%</span>
+          <input id="c_it_rent" type="number" min="1" max="100" step="1" title="Affitti" aria-label="Affitti: incarichi a transazioni"><span class="u">%</span>
+        </div>
+      </div>
     </section>
   </div>
 
@@ -177,7 +208,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <h2>Per le locazioni</h2>
       <div class="sub"><span>Guadagno da queste locazioni</span><b id="kL"></b></div>
       <div class="fun" id="fL"></div>
-      <p class="note">Ogni locazione richiede in media 1,5 incarichi di affitto.</p>
+      <p class="note">I fabbisogni di notizie, acquisizioni, incarichi, visite e proposte sono stimati usando i tassi di conversione degli affitti impostati.</p>
     </section>
 
     <section class="panel">
@@ -273,7 +304,8 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 </div>
 
 <script>
-var DEF={target:3453,piano:20,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1,
+var DEF={target:3453,piano:20,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,
+  c_na_rent:100,c_ai_rent:60,c_vp_rent:21,c_pt_rent:59,c_it_rent:100,gI:2,gV:1,gL:1,
   jobType:"onboard",step1:false,step2:false,step3:false,onboardSale:0,onboardRent:0,onboardSaleTransaction:0,
   juniorSale:0,juniorRent:0,juniorSaleClosed:0,juniorRentClosed:0,juniorRegime:"employment",license:"no",formula:"fixed",
   bonus3:false,bonus5:false,leadership:"none",tutorSteps:0,tutorTrans:0,smPeople:0,smTeamFat:0,respAgencyFat:0,respAgencyGoal:false};
@@ -283,11 +315,12 @@ var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
 var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
 var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
 function $(i){return document.getElementById(i)}
-var ids=["target","piano","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
+var ids=["target","piano","vm","lm","c9","c10","c11","c12","c13","c_na_rent","c_ai_rent","c_vp_rent","c_pt_rent","c_it_rent","gI","gV","gL",
   "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed",
   "step1","step2","step3","jobType","juniorRegime","license","formula","bonus3","bonus5","leadership",
   "tutorSteps","tutorTrans","smPeople","smTeamFat","respAgencyFat","respAgencyGoal"];
-var key={target:"target",piano:"piano",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
+var key={target:"target",piano:"piano",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",
+  c_na_rent:"c_na_rent",c_ai_rent:"c_ai_rent",c_vp_rent:"c_vp_rent",c_pt_rent:"c_pt_rent",c_it_rent:"c_it_rent",gI:"gI",gV:"gV",gL:"gL"};
 function fill(){ids.forEach(function(i){var el=$(i),value=S[key[i]||i];if(el.type==="checkbox")el.checked=value;else el.value=value});$("loc").checked=S.loc}
 function funnel(el,steps){
   var max=Math.max.apply(null,steps.map(function(s){return s[1]}))||1;
@@ -306,7 +339,11 @@ function calc(){
   var nI=S.c9>0?qI/(S.c9/100):0;
   var oV=S.c12>0?S.gV/(S.c12/100):0;
   var qV=S.c11>0?oV/(S.c11/100):0;
-  var oL=gL*1.5;
+  var oL=S.c_it_rent>0?gL/(S.c_it_rent/100):0;
+  var qL=S.c_ai_rent>0?oL/(S.c_ai_rent/100):0;
+  var nL=S.c_na_rent>0?qL/(S.c_na_rent/100):0;
+  var oV_rent=S.c_pt_rent>0?gL/(S.c_pt_rent/100):0;
+  var qV_rent=S.c_vp_rent>0?oV_rent/(S.c_vp_rent/100):0;
   var diff=tot-S.target, pct=S.target>0?tot/S.target*100:0;
   var fat=p>0?S.target/p*12:0;
   var tierTotal=function(count,first,second,later){
@@ -420,7 +457,7 @@ function calc(){
   $("kI").textContent=eur2.format(kI);$("kV").textContent=eur2.format(kV);$("kL").textContent=eur2.format(kL);
   funnel($("fI"),[["Notizie da trovare",nI],["Acquisizioni da fare",qI],["Incarichi da prendere",oI],["Incarichi venduti",S.gI]]);
   funnel($("fV"),[["Visite da fare",qV],["Proposte da ritirare",oV],["Vendite concluse",S.gV]]);
-  funnel($("fL"),[["Incarichi di affitto",oL],["Locazioni concluse",gL]]);
+  funnel($("fL"),[["Notizie affitto",nL],["Acquisizioni affitto",qL],["Incarichi di affitto",oL],["Visite affitto",qV_rent],["Proposte affitto",oV_rent],["Locazioni concluse",gL]]);
   $("sL").className="panel";
   $("gLrow").className="f";
   $("onboardFields").hidden=S.jobType!=="onboard";
@@ -437,7 +474,7 @@ ids.forEach(function(i){var el=$(i),stateKey=key[i]||i;
     el.addEventListener("change",function(){S[stateKey]=el.value;calc()});
   }else{
     el.addEventListener("input",function(){var v=parseFloat(el.value);S[stateKey]=isFinite(v)&&v>=0?v:0;
-      ["c9","c10","c11","c12","c13"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()});
+      ["c9","c10","c11","c12","c13","c_na_rent","c_ai_rent","c_vp_rent","c_pt_rent","c_it_rent"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()});
   }
 });
 $("loc").addEventListener("change",function(){S.loc=$("loc").checked;calc()});
