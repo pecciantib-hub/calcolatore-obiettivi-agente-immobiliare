@@ -51,6 +51,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 .step .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
 @media (max-width:520px){.step{grid-template-columns:110px 1fr 48px;font-size:13px}}
 .sub{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:14px}
+.sub[hidden]{display:none}
 .sub b{font-weight:600}
 .note{color:var(--muted);font-size:12.5px;margin:10px 0 0}
 .off{opacity:.45}
@@ -123,6 +124,15 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <div class="f"><label for="gI">Incarichi da prendere e vendere<small>Transazioni da acquisitore · <span id="pI"></span> a incarico</small></label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
       <div class="f"><label for="gV">Vendite da concludere<small>Transazioni da venditore · <span id="pV"></span> a vendita</small></label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
       <div class="f" id="gLrow"><label for="gL">Locazioni da concludere<small><span id="pL"></span> a locazione</small></label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
+    </section>
+
+    <section class="panel">
+      <h2>I tuoi Totali Annuali 2027</h2>
+      <div class="sub"><span>Vendite totali nell’anno</span><b id="annualSales">–</b></div>
+      <div class="sub" id="annualRentRow"><span>Locazioni totali nell’anno</span><b id="annualRents">–</b></div>
+      <div class="sub"><span>Produzione totale generata</span><b id="annualProduction">–</b></div>
+      <div class="sub"><span>Incarichi totali da prendere</span><b><span id="annualAssignments">–</span> <span class="lbl">(pari a <span id="monthlyAssignments">–</span> al mese)</span></b></div>
+      <div class="sub"><span>Tasso di conversione (Incarichi → Vendite)</span><b>51%</b></div>
     </section>
 
     <section class="panel">
@@ -263,6 +273,12 @@ function calc(){
   var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
   $("fat").textContent=eur.format(fat);
   $("production").textContent=eur.format(fat*1.12);
+  $("annualSales").textContent=nf.format(S.gV*12);
+  $("annualRents").textContent=nf.format(gL*12);
+  $("annualRentRow").hidden=!S.loc;
+  $("annualProduction").textContent=eur.format(fat*1.12);
+  $("annualAssignments").textContent=nf.format(oI*12);
+  $("monthlyAssignments").textContent=nf.format(oI);
   $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
   $("commissionGross").textContent=eur.format(gross);
   var commissionDetails=$("commissionDetails");
