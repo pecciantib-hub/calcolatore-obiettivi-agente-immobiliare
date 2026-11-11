@@ -202,6 +202,34 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
             <option value="commission">Solo Provvigioni</option>
           </select>
         </div>
+        <div class="sub" style="margin-top:12px"><b>Bonus (Sezione 5.2)</b></div>
+        <div class="f"><label for="bonus3">+3% sull'eccedenza trimestrale</label><input id="bonus3" type="checkbox"></div>
+        <div class="f"><label for="bonus5">+5% superamento budget annuo</label><input id="bonus5" type="checkbox"></div>
+
+        <div class="sub" style="margin-top:12px"><b>Ruoli di Guida (Sezione 5.3)</b></div>
+        <div class="f">
+          <label for="leadership">Ruolo</label>
+          <select id="leadership">
+            <option value="none">Nessuno</option>
+            <option value="tutor">Tutor</option>
+            <option value="sm">Sales Manager</option>
+            <option value="vice">Vice Responsabile</option>
+            <option value="resp">Responsabile</option>
+          </select>
+        </div>
+
+        <div id="tutorFields" hidden>
+          <div class="f"><label for="tutorSteps">Step superati dagli Onboard<small>150€ l'uno</small></label><div class="in"><input id="tutorSteps" type="number" min="0" step="1" value="0"></div></div>
+          <div class="f"><label for="tutorTrans">Transazioni chiuse dagli Onboard<small>10% (stimato 400€ base)</small></label><div class="in"><input id="tutorTrans" type="number" min="0" step="1" value="0"></div></div>
+        </div>
+        <div id="smFields" hidden>
+          <div class="f"><label for="smPeople">Persone coordinate<small>100€ al mese / cad.</small></label><div class="in"><input id="smPeople" type="number" min="0" step="1" value="0"></div></div>
+          <div class="f"><label for="smTeamFat">Fatturato annuo del team<small>2% eccedenza (stima sul totale)</small></label><div class="in"><input id="smTeamFat" type="number" min="0" step="1000" value="0"><span class="u">€</span></div></div>
+        </div>
+        <div id="respFields" hidden>
+          <div class="f"><label for="respAgencyFat">Fatturato annuo agenzia</label><div class="in"><input id="respAgencyFat" type="number" min="0" step="1000" value="0"><span class="u">€</span></div></div>
+          <div class="f"><label for="respAgencyGoal">Obiettivo agenzia raggiunto (+1%)</label><input id="respAgencyGoal" type="checkbox"></div>
+        </div>
       </div>
 
       <div class="commission-result">
@@ -221,7 +249,8 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 <script>
 var DEF={target:3453,piano:20,quota:50,mA:120,mV:80,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1,
   jobType:"onboard",step1:false,step2:false,step3:false,onboardSale:0,onboardRent:0,onboardSaleTransaction:0,
-  juniorSale:0,juniorRent:0,juniorSaleClosed:0,juniorRentClosed:0,juniorRegime:"employment",license:"no",formula:"fixed"};
+  juniorSale:0,juniorRent:0,juniorSaleClosed:0,juniorRentClosed:0,juniorRegime:"employment",license:"no",formula:"fixed",
+  bonus3:false,bonus5:false,leadership:"none",tutorSteps:0,tutorTrans:0,smPeople:0,smTeamFat:0,respAgencyFat:0,respAgencyGoal:false};
 var PRE={storico:[9979,1300],oggi:[10209,1383]};
 var S=Object.assign({},DEF);
 var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
@@ -229,11 +258,11 @@ var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFr
 var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
 function $(i){return document.getElementById(i)}
 var ids=["target","piano","quota","mA","mV","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
-  "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed"];
+  "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed",
+  "step1","step2","step3","jobType","juniorRegime","license","formula","bonus3","bonus5","leadership",
+  "tutorSteps","tutorTrans","smPeople","smTeamFat","respAgencyFat","respAgencyGoal"];
 var key={target:"target",piano:"piano",quota:"quota",mA:"mA",mV:"mV",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
-function fill(){ids.forEach(function(i){$(i).value=S[key[i]||i]});$("loc").checked=S.loc;
-  ["step1","step2","step3"].forEach(function(i){$(i).checked=S[i]});
-  ["jobType","juniorRegime","license","formula"].forEach(function(i){$(i).value=S[i]})}
+function fill(){ids.forEach(function(i){var el=$(i),value=S[key[i]||i];if(el.type==="checkbox")el.checked=value;else el.value=value});$("loc").checked=S.loc}
 function funnel(el,steps){
   var max=Math.max.apply(null,steps.map(function(s){return s[1]}))||1;
   el.innerHTML=steps.map(function(s,i){
@@ -264,8 +293,67 @@ function calc(){
       +tierTotal(S.juniorSaleClosed,250,400,500)+tierTotal(S.juniorRentClosed,100,150,200);
     gross=12000+Math.max(0,variable-12000)*(S.juniorRegime==="vat"?0.20:0.12);
   }else{
-    var hasLicense=S.license==="yes", hasFixed=S.formula==="fixed";
-    gross=fat*(hasFixed?(hasLicense?0.07:0.04):(hasLicense?0.23:0.20))+(hasFixed?12000:0);
+    var hasLicense = S.license === "yes";
+    var hasFixed = S.formula === "fixed";
+
+    var levels = [
+      { t: 60000, f: 1000, pNo: 4, pNoS: 20, pYes: 7, pYesS: 23 },
+      { t: 90000, f: 1100, pNo: 7, pNoS: 22, pYes: 10, pYesS: 25 },
+      { t: 120000, f: 1300, pNo: 9, pNoS: 24, pYes: 13, pYesS: 28 },
+      { t: 150000, f: 1500, pNo: 11, pNoS: 26, pYes: 17, pYesS: 32 },
+      { t: 180000, f: 1800, pNo: 13, pNoS: 28, pYes: 21, pYesS: 35 },
+      { t: 210000, f: 2000, pNo: 13, pNoS: 28, pYes: 23, pYesS: 38 },
+      { t: 240000, f: 2400, pNo: 13, pNoS: 28, pYes: 25, pYesS: 40 },
+      { t: 280000, f: 0, pNo: 13, pNoS: 28, pYes: 45, pYesS: 45 }
+    ];
+
+    var L = 0;
+    for (var i = 7; i >= 0; i--) { if (fat >= levels[i].t) { L = i; break; } }
+
+    if (L === 7 && hasLicense) { hasFixed = false; }
+
+    var curLvl = levels[L];
+    var baseRate = hasFixed ? (hasLicense ? curLvl.pYes : curLvl.pNo) : (hasLicense ? curLvl.pYesS : curLvl.pNoS);
+    var fixedMonthly = hasFixed ? curLvl.f : 0;
+
+    var dispLevel = (!hasLicense && L > 4) ? 5 : L + 1;
+    if (!hasLicense && L > 4) {
+      fixedMonthly = hasFixed ? 1800 : 0;
+    }
+
+    if (S.bonus3) baseRate += 3;
+    if (S.bonus5) baseRate += 5;
+
+    var guideFixed = 0;
+    var guideVar = 0;
+    var tutorComp = (S.tutorSteps * 150) + (S.tutorTrans * 400);
+
+    if (S.leadership === "tutor") {
+      guideVar = tutorComp;
+    } else if (S.leadership === "sm") {
+      guideFixed = S.smPeople * 100 * 12;
+      guideVar = S.smTeamFat * 0.02;
+    } else if (S.leadership === "vice") {
+      guideFixed = (hasLicense ? 200 : 100) * 12;
+      guideVar = tutorComp;
+    } else if (S.leadership === "resp") {
+      guideFixed = (hasLicense ? 800 : 400) * 12;
+      guideVar = (S.respAgencyFat * (hasLicense ? 0.05 : 0.025)) + (S.respAgencyGoal ? S.respAgencyFat * 0.01 : 0);
+    }
+
+    var totalGuideComp = guideFixed + guideVar;
+    var totalFixedYearly = fixedMonthly * 12;
+    var totalCommissions = fat * (baseRate / 100);
+
+    gross = totalCommissions + totalFixedYearly + totalGuideComp;
+
+    window.agencyBreakdown = `
+      <b>Percentuale provvigionale base:</b> ${baseRate}%<br>
+      <b>Provvigioni stimate:</b> ${eur2.format(totalCommissions)}<br>
+      <b>Fisso annuale:</b> ${eur2.format(totalFixedYearly)}<br>
+      <b>Compensi da guida:</b> ${eur2.format(totalGuideComp)}<br>
+      <b>Livello sbloccato 2028:</b> Livello ${dispLevel}
+    `;
   }
   $("earn").textContent=eur2.format(tot);
   $("tgt").textContent=eur.format(S.target);
@@ -283,18 +371,7 @@ function calc(){
   $("commissionGross").textContent=eur.format(gross);
   var commissionDetails=$("commissionDetails");
   if(S.jobType==="over60"){
-    var rate=S.formula==="fixed"?(S.license==="yes"?7:4):(S.license==="yes"?23:20);
-    var level;
-    if(fat<60000)level=0;
-    else if(fat<90000)level=1;
-    else if(fat<120000)level=2;
-    else if(fat<150000)level=3;
-    else if(fat<180000)level=4;
-    else if(fat<210000)level=5;
-    else if(fat<240000)level=S.license==="yes"?6:5;
-    else if(fat<280000)level=S.license==="yes"?7:5;
-    else level=S.license==="yes"?8:5;
-    commissionDetails.textContent="Percentuale: "+rate+"% | Livello sbloccato per il 2028: Livello "+level;
+    commissionDetails.innerHTML=window.agencyBreakdown;
     commissionDetails.hidden=false;
   }else{
     commissionDetails.hidden=true;
@@ -312,12 +389,21 @@ function calc(){
   $("onboardFields").hidden=S.jobType!=="onboard";
   $("juniorFields").hidden=S.jobType!=="junior";
   $("over60Fields").hidden=S.jobType!=="over60";
+  $("tutorFields").hidden=(S.jobType!=="over60"||(S.leadership!=="tutor"&&S.leadership!=="vice"));
+  $("smFields").hidden=(S.jobType!=="over60"||S.leadership!=="sm");
+  $("respFields").hidden=(S.jobType!=="over60"||S.leadership!=="resp");
 }
-ids.forEach(function(i){$(i).addEventListener("input",function(){var v=parseFloat($(i).value);S[key[i]||i]=isFinite(v)&&v>=0?v:0;
-  ["c9","c10","c11","c12","c13"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()})});
+ids.forEach(function(i){var el=$(i),stateKey=key[i]||i;
+  if(el.type==="checkbox"){
+    el.addEventListener("change",function(){S[stateKey]=el.checked;calc()});
+  }else if(el.tagName==="SELECT"){
+    el.addEventListener("change",function(){S[stateKey]=el.value;calc()});
+  }else{
+    el.addEventListener("input",function(){var v=parseFloat(el.value);S[stateKey]=isFinite(v)&&v>=0?v:0;
+      ["c9","c10","c11","c12","c13"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()});
+  }
+});
 $("loc").addEventListener("change",function(){S.loc=$("loc").checked;calc()});
-["step1","step2","step3"].forEach(function(i){$(i).addEventListener("change",function(){S[i]=$(i).checked;calc()})});
-["jobType","juniorRegime","license","formula"].forEach(function(i){$(i).addEventListener("change",function(){S[i]=$(i).value;calc()})});
 document.querySelectorAll("[data-preset]").forEach(function(btn){btn.addEventListener("click",function(){
   var p=PRE[btn.dataset.preset];S.vm=p[0];S.lm=p[1];
   document.querySelectorAll("[data-preset]").forEach(function(x){x.setAttribute("aria-pressed",x===btn)});fill();calc()})});
