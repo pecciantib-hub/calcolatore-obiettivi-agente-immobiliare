@@ -28,7 +28,8 @@ h2{font-size:16px;margin:0 0 12px;font-weight:700}
 .f small{display:block;color:var(--muted);font-size:12px}
 .in{display:flex;align-items:center;gap:4px}
 input[type=number]{width:84px;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:500 15px "Public Sans",sans-serif;text-align:right}
-input[type=number]:focus-visible,button:focus-visible,input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+select{max-width:100%;padding:7px 30px 7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:500 14px "Public Sans",sans-serif}
+input[type=number]:focus-visible,button:focus-visible,input[type=checkbox]:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .u{color:var(--muted);font-size:13px;min-width:14px}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
 button{font:500 13px "Public Sans",sans-serif;padding:7px 11px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
@@ -40,7 +41,8 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 .track{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:10px 0 6px}
 .fill{height:100%;background:var(--accent);width:0;transition:width .25s}
 .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:600;background:var(--accent-soft);color:var(--ok)}
-.badge.low{background:transparent;border:1px solid var(--warn);color:var(--ink)}
+.badge.low{background:var(--warn);color:#013351}
+.commission-result{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
 .fun{margin-top:6px}
 .step{display:grid;grid-template-columns:150px 1fr 58px;align-items:center;gap:10px;padding:5px 0;font-size:14px}
 .step .b{height:22px;background:var(--bar);border-radius:3px;min-width:3px;transition:width .25s}
@@ -139,21 +141,86 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <div class="fun" id="fL"></div>
       <p class="note">Ogni locazione richiede in media 1,5 incarichi di affitto.</p>
     </section>
+
+    <section class="panel">
+      <h2>Parte 5 - Calcolatore Provvigionale</h2>
+      <div class="f">
+        <label for="jobType">Inquadramento</label>
+        <select id="jobType">
+          <option value="onboard">Agente Onboard</option>
+          <option value="junior">Agente Junior / Analyst</option>
+          <option value="over60">Agente (&gt; 60.000€)</option>
+        </select>
+      </div>
+
+      <div id="onboardFields">
+        <div class="sub"><b>Step completati</b></div>
+        <div class="f"><label for="step1">Step 1 · 800€</label><input id="step1" type="checkbox"></div>
+        <div class="f"><label for="step2">Step 2 · 900€</label><input id="step2" type="checkbox"></div>
+        <div class="f"><label for="step3">Step 3 · 1.000€</label><input id="step3" type="checkbox"></div>
+        <div class="f"><label for="onboardSale">Incarichi di vendita extra<small>Il primo vale 200€, i successivi 100€ ciascuno</small></label><div class="in"><input id="onboardSale" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f"><label for="onboardRent">Incarichi di affitto extra<small>50€ ciascuno</small></label><div class="in"><input id="onboardRent" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f"><label for="onboardSaleTransaction">Transazioni di vendita extra<small>250€ ciascuna</small></label><div class="in"><input id="onboardSaleTransaction" type="number" min="0" step="1" value="0"></div></div>
+      </div>
+
+      <div id="juniorFields" hidden>
+        <p class="sub"><b>Fisso base garantito: 1.000€ al mese (12.000€ annui)</b></p>
+        <div class="f"><label for="juniorSale">Incarichi Vendita<small>1°=100€, 2°=150€, successivi=200€</small></label><div class="in"><input id="juniorSale" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f"><label for="juniorRent">Incarichi Affitto<small>1°=50€, 2°=100€, successivi=150€</small></label><div class="in"><input id="juniorRent" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f"><label for="juniorSaleClosed">Vendite concluse<small>1ª=250€, 2ª=400€, successive=500€</small></label><div class="in"><input id="juniorSaleClosed" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f"><label for="juniorRentClosed">Affitti conclusi<small>1ª=100€, 2ª=150€, successivi=200€</small></label><div class="in"><input id="juniorRentClosed" type="number" min="0" step="1" value="0"></div></div>
+        <div class="f">
+          <label for="juniorRegime">Regime</label>
+          <select id="juniorRegime">
+            <option value="employment">Contratto di lavoro (12% su eccedenza)</option>
+            <option value="vat">Partita IVA (20% su eccedenza)</option>
+          </select>
+        </div>
+      </div>
+
+      <div id="over60Fields" hidden>
+        <div class="f">
+          <label for="license">Patentino</label>
+          <select id="license"><option value="no">No</option><option value="yes">Sì</option></select>
+        </div>
+        <div class="f">
+          <label for="formula">Formula</label>
+          <select id="formula">
+            <option value="fixed">Fisso + Provvigioni</option>
+            <option value="commission">Solo Provvigioni</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="commission-result">
+        <div class="hero">
+          <div>
+            <div class="lbl">Guadagno Lordo Stimato 2027</div>
+            <div class="big num" id="commissionGross">–</div>
+          </div>
+          <div><span class="badge" id="commissionBadge">–</span></div>
+        </div>
+      </div>
   </div>
 </div>
 </div>
 
 <script>
-var DEF={target:3453,piano:20,quota:50,mA:120,mV:80,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1};
+var DEF={target:3453,piano:20,quota:50,mA:120,mV:80,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1,
+  jobType:"onboard",step1:false,step2:false,step3:false,onboardSale:0,onboardRent:0,onboardSaleTransaction:0,
+  juniorSale:0,juniorRent:0,juniorSaleClosed:0,juniorRentClosed:0,juniorRegime:"employment",license:"no",formula:"fixed"};
 var PRE={storico:[9979,1300],oggi:[10209,1383]};
 var S=Object.assign({},DEF);
 var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
 var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
 var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
 function $(i){return document.getElementById(i)}
-var ids=["target","piano","quota","mA","mV","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL"];
+var ids=["target","piano","quota","mA","mV","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
+  "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed"];
 var key={target:"target",piano:"piano",quota:"quota",mA:"mA",mV:"mV",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
-function fill(){ids.forEach(function(i){$(i).value=S[key[i]]});$("loc").checked=S.loc}
+function fill(){ids.forEach(function(i){$(i).value=S[key[i]||i]});$("loc").checked=S.loc;
+  ["step1","step2","step3"].forEach(function(i){$(i).checked=S[i]});
+  ["jobType","juniorRegime","license","formula"].forEach(function(i){$(i).value=S[i]})}
 function funnel(el,steps){
   var max=Math.max.apply(null,steps.map(function(s){return s[1]}))||1;
   el.innerHTML=steps.map(function(s,i){
@@ -171,12 +238,31 @@ function calc(){
   var oL=gL*1.5;
   var diff=tot-S.target, pct=S.target>0?tot/S.target*100:0;
   var fat=p>0?S.target/p*12:0;
+  var tierTotal=function(count,first,second,later){
+    if(count<=0)return 0;
+    return first+(count>1?second:0)+Math.max(0,count-2)*later;
+  };
+  var gross;
+  if(S.jobType==="onboard"){
+    gross=(S.step1?800:0)+(S.step2?900:0)+(S.step3?1000:0)
+      +(S.onboardSale>0?200+(S.onboardSale-1)*100:0)+S.onboardRent*50+S.onboardSaleTransaction*250;
+  }else if(S.jobType==="junior"){
+    var variable=tierTotal(S.juniorSale,100,150,200)+tierTotal(S.juniorRent,50,100,150)
+      +tierTotal(S.juniorSaleClosed,250,400,500)+tierTotal(S.juniorRentClosed,100,150,200);
+    gross=12000+Math.max(0,variable-12000)*(S.juniorRegime==="vat"?0.20:0.12);
+  }else{
+    var hasLicense=S.license==="yes", hasFixed=S.formula==="fixed";
+    gross=fat*(hasFixed?(hasLicense?0.07:0.04):(hasLicense?0.23:0.20))+(hasFixed?12000:0);
+  }
   $("earn").textContent=eur2.format(tot);
   $("tgt").textContent=eur.format(S.target);
   $("fill").style.width=Math.min(100,pct)+"%";
   var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
   $("fat").textContent=eur.format(fat);
   $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
+  $("commissionGross").textContent=eur.format(gross);
+  var covered=gross>=S.target*12;
+  var cb=$("commissionBadge");cb.textContent=covered?"Obiettivo Coperto!":"Attenzione: le provvigioni non coprono il guadagno desiderato.";cb.className="badge"+(covered?"":" low");
   $("pI").textContent=eur2.format(cI);$("pV").textContent=eur2.format(cV);$("pL").textContent=eur2.format(cL);
   $("kI").textContent=eur2.format(kI);$("kV").textContent=eur2.format(kV);$("kL").textContent=eur2.format(kL);
   funnel($("fI"),[["Notizie da trovare",nI],["Acquisizioni da fare",qI],["Incarichi da prendere",oI],["Incarichi venduti",S.gI]]);
@@ -185,10 +271,15 @@ function calc(){
   $("sL").className="panel"+(S.loc?"":" off");
   $("gLrow").className="f"+(S.loc?"":" off");
   $("gL").disabled=!S.loc;
+  $("onboardFields").hidden=S.jobType!=="onboard";
+  $("juniorFields").hidden=S.jobType!=="junior";
+  $("over60Fields").hidden=S.jobType!=="over60";
 }
-ids.forEach(function(i){$(i).addEventListener("input",function(){var v=parseFloat($(i).value);S[key[i]]=isFinite(v)&&v>=0?v:0;
+ids.forEach(function(i){$(i).addEventListener("input",function(){var v=parseFloat($(i).value);S[key[i]||i]=isFinite(v)&&v>=0?v:0;
   ["c9","c10","c11","c12","c13"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()})});
 $("loc").addEventListener("change",function(){S.loc=$("loc").checked;calc()});
+["step1","step2","step3"].forEach(function(i){$(i).addEventListener("change",function(){S[i]=$(i).checked;calc()})});
+["jobType","juniorRegime","license","formula"].forEach(function(i){$(i).addEventListener("change",function(){S[i]=$(i).value;calc()})});
 document.querySelectorAll("[data-preset]").forEach(function(btn){btn.addEventListener("click",function(){
   var p=PRE[btn.dataset.preset];S.vm=p[0];S.lm=p[1];
   document.querySelectorAll("[data-preset]").forEach(function(x){x.setAttribute("aria-pressed",x===btn)});fill();calc()})});
