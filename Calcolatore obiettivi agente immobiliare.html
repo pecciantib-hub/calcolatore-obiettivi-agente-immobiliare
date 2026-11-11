@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Calcolatore budget 2027 agente</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg:#eef1f5;--surface:#fff;--ink:#14213d;--muted:#5b6578;--line:#d9dee7;--accent:#0f766e;--accent-soft:#d5ede9;--bar:#14213d;--warn:#b45309;--ok:#0f766e;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1522;--surface:#162033;--ink:#e8edf6;--muted:#9aa6bb;--line:#2a3750;--accent:#4fd1c0;--accent-soft:#17383a;--bar:#7aa2f7;--warn:#f5a65b;--ok:#4fd1c0;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#0e1522;--surface:#162033;--ink:#e8edf6;--muted:#9aa6bb;--line:#2a3750;--accent:#4fd1c0;--accent-soft:#17383a;--bar:#7aa2f7;--warn:#f5a65b;--ok:#4fd1c0;color-scheme:dark}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "Public Sans",system-ui,sans-serif}
+h1,h2,h3,.num{font-family:"Bricolage Grotesque","Public Sans",system-ui,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 48px}
+header{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+h1{font-size:26px;line-height:1.15;margin:0;font-weight:700}
+header p{margin:4px 0 0;color:var(--muted)}
+.grid{display:grid;grid-template-columns:340px 1fr;gap:16px;align-items:start}
+@media (max-width:820px){.grid{grid-template-columns:1fr}}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px}
+.panel+.panel{margin-top:16px}
+h2{font-size:16px;margin:0 0 12px;font-weight:700}
+.f{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:6px 0}
+.f label{flex:1;font-size:14px}
+.f small{display:block;color:var(--muted);font-size:12px}
+.in{display:flex;align-items:center;gap:4px}
+input[type=number]{width:84px;padding:7px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:500 15px "Public Sans",sans-serif;text-align:right}
+input[type=number]:focus-visible,button:focus-visible,input[type=checkbox]:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.u{color:var(--muted);font-size:13px;min-width:14px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:6px}
+button{font:500 13px "Public Sans",sans-serif;padding:7px 11px;border-radius:6px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer}
+button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-color:var(--ink)}
+.hero{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media (max-width:520px){.hero{grid-template-columns:1fr}}
+.big{font-size:42px;line-height:1;font-weight:700;margin:4px 0}
+.lbl{color:var(--muted);font-size:13px}
+.track{height:10px;background:var(--line);border-radius:5px;overflow:hidden;margin:10px 0 6px}
+.fill{height:100%;background:var(--accent);width:0;transition:width .25s}
+.badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:600;background:var(--accent-soft);color:var(--ok)}
+.badge.low{background:transparent;border:1px solid var(--warn);color:var(--warn)}
+.fun{margin-top:6px}
+.step{display:grid;grid-template-columns:150px 1fr 58px;align-items:center;gap:10px;padding:5px 0;font-size:14px}
+.step .b{height:22px;background:var(--bar);border-radius:3px;min-width:3px;transition:width .25s}
+.step.end .b{background:var(--accent)}
+.step .v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums}
+@media (max-width:520px){.step{grid-template-columns:110px 1fr 48px;font-size:13px}}
+.sub{display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:8px;font-size:14px}
+.sub b{font-weight:600}
+.note{color:var(--muted);font-size:12.5px;margin:10px 0 0}
+.off{opacity:.45}
+</style>
+</head>
+<body>
+<div class="wrap">
+<header>
+  <div>
+    <h1>Calcolatore budget 2027 agente</h1>
+    <p>Quanto devi fare, e da quanti contatti partire, per raggiungere il guadagno che vuoi.</p>
+  </div>
+  <button id="reset" type="button">Ripristina valori iniziali</button>
+</header>
+
+<div class="grid">
+  <div>
+    <section class="panel">
+      <h2>Il tuo piano</h2>
+      <div class="f"><label for="target">Guadagno mensile da raggiungere</label><div class="in"><input id="target" type="number" min="0" step="50"><span class="u">€</span></div></div>
+      <div class="f"><label for="piano">Piano provvigionale</label><div class="in"><input id="piano" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="quota">Quota agente sulla provvigione agenzia</label><div class="in"><input id="quota" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="mA">Merito sull’acquisizione<small>Sei più bravo? Sopra 100%</small></label><div class="in"><input id="mA" type="number" min="0" step="5"><span class="u">%</span></div></div>
+      <div class="f"><label for="mV">Merito sulla vendita<small>Sotto 100% se pesa meno</small></label><div class="in"><input id="mV" type="number" min="0" step="5"><span class="u">%</span></div></div>
+      <div class="f"><label for="loc">Ti occupi anche di locazioni?</label><input id="loc" type="checkbox"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Valori medi dell’agenzia</h2>
+      <div class="row">
+        <button type="button" data-preset="storico" aria-pressed="true">Medie storiche</button>
+        <button type="button" data-preset="oggi" aria-pressed="false">Ad oggi 17-12</button>
+      </div>
+      <div class="f"><label for="vm">Provvigione media di una vendita</label><div class="in"><input id="vm" type="number" min="0" step="10"><span class="u">€</span></div></div>
+      <div class="f"><label for="lm">Provvigione media di una locazione</label><div class="in"><input id="lm" type="number" min="0" step="10"><span class="u">€</span></div></div>
+    </section>
+
+    <section class="panel">
+      <h2>Tassi di conversione</h2>
+      <div class="f"><label for="c9">Notizie → acquisizioni</label><div class="in"><input id="c9" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="c10">Acquisizioni → incarichi</label><div class="in"><input id="c10" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="c11">Visite → proposte</label><div class="in"><input id="c11" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="c12">Proposte → vendite</label><div class="in"><input id="c12" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+      <div class="f"><label for="c13">Incarichi → vendite</label><div class="in"><input id="c13" type="number" min="1" max="100" step="1"><span class="u">%</span></div></div>
+    </section>
+  </div>
+
+  <div>
+    <section class="panel">
+      <div class="hero">
+        <div>
+          <div class="lbl">Guadagno con i tuoi obiettivi</div>
+          <div class="big num" id="earn">–</div>
+          <div class="lbl">su <span id="tgt">–</span> al mese</div>
+          <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+          <span class="badge" id="badge">–</span>
+        </div>
+        <div>
+          <div class="lbl">Fatturato annuo da generare</div>
+          <div class="big num" id="fat">–</div>
+          <div class="lbl">per ottenere il guadagno desiderato, ogni mese per 12 mesi</div>
+          <p class="lbl" style="margin:10px 0 0">Differenza: <b id="diff" style="color:var(--ink)">–</b></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Obiettivi mensili</h2>
+      <div class="f"><label for="gI">Incarichi da prendere e vendere<small>Transazioni da acquisitore · <span id="pI"></span> a incarico</small></label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
+      <div class="f"><label for="gV">Vendite da concludere<small>Transazioni da venditore · <span id="pV"></span> a vendita</small></label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
+      <div class="f" id="gLrow"><label for="gL">Locazioni da concludere<small><span id="pL"></span> a locazione</small></label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
+    </section>
+
+    <section class="panel">
+      <h2>Per vendere gli incarichi</h2>
+      <div class="sub"><span>Guadagno da questi incarichi</span><b id="kI"></b></div>
+      <div class="fun" id="fI"></div>
+    </section>
+
+    <section class="panel">
+      <h2>Per concludere le vendite</h2>
+      <div class="sub"><span>Guadagno da queste vendite</span><b id="kV"></b></div>
+      <div class="fun" id="fV"></div>
+    </section>
+
+    <section class="panel" id="sL">
+      <h2>Per le locazioni</h2>
+      <div class="sub"><span>Guadagno da queste locazioni</span><b id="kL"></b></div>
+      <div class="fun" id="fL"></div>
+      <p class="note">Ogni locazione richiede in media 1,5 incarichi di affitto.</p>
+    </section>
+  </div>
+</div>
+</div>
+
+<script>
+var DEF={target:3453,piano:20,quota:50,mA:120,mV:80,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1};
+var PRE={storico:[9979,1300],oggi:[10209,1383]};
+var S=Object.assign({},DEF);
+var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
+var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
+var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
+function $(i){return document.getElementById(i)}
+var ids=["target","piano","quota","mA","mV","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL"];
+var key={target:"target",piano:"piano",quota:"quota",mA:"mA",mV:"mV",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
+function fill(){ids.forEach(function(i){$(i).value=S[key[i]]});$("loc").checked=S.loc}
+function funnel(el,steps){
+  var max=Math.max.apply(null,steps.map(function(s){return s[1]}))||1;
+  el.innerHTML=steps.map(function(s,i){
+    var w=Math.max(1,s[1]/max*100);
+    return '<div class="step'+(i===steps.length-1?' end':'')+'"><span>'+s[0]+'</span><div><div class="b" style="width:'+w+'%"></div></div><span class="v">'+nf.format(s[1])+'</span></div>';
+  }).join("");
+}
+function calc(){
+  var p=S.piano/100,q=S.quota/100;
+  var cI=S.vm*q*(S.mA/100)*p, cV=S.vm*q*(S.mV/100)*p, cL=S.lm*p;
+  var gL=S.loc?S.gL:0;
+  var kI=S.gI*cI,kV=S.gV*cV,kL=gL*cL,tot=kI+kV+kL;
+  var oI=S.gI/(S.c13/100), qI=oI/(S.c10/100), nI=qI/(S.c9/100);
+  var oV=S.gV/(S.c12/100), qV=oV/(S.c11/100);
+  var oL=gL*1.5;
+  var diff=tot-S.target, pct=S.target>0?tot/S.target*100:0;
+  var fat=p>0?S.target/p*12:0;
+  $("earn").textContent=eur2.format(tot);
+  $("tgt").textContent=eur.format(S.target);
+  $("fill").style.width=Math.min(100,pct)+"%";
+  var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
+  $("fat").textContent=eur.format(fat);
+  $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
+  $("pI").textContent=eur2.format(cI);$("pV").textContent=eur2.format(cV);$("pL").textContent=eur2.format(cL);
+  $("kI").textContent=eur2.format(kI);$("kV").textContent=eur2.format(kV);$("kL").textContent=eur2.format(kL);
+  funnel($("fI"),[["Notizie da trovare",nI],["Acquisizioni da fare",qI],["Incarichi da prendere",oI],["Incarichi venduti",S.gI]]);
+  funnel($("fV"),[["Visite da fare",qV],["Proposte da ritirare",oV],["Vendite concluse",S.gV]]);
+  funnel($("fL"),[["Incarichi di affitto",oL],["Locazioni concluse",gL]]);
+  $("sL").className="panel"+(S.loc?"":" off");
+  $("gLrow").className="f"+(S.loc?"":" off");
+  $("gL").disabled=!S.loc;
+}
+ids.forEach(function(i){$(i).addEventListener("input",function(){var v=parseFloat($(i).value);S[key[i]]=isFinite(v)&&v>=0?v:0;
+  ["c9","c10","c11","c12","c13"].forEach(function(c){if(S[c]<=0)S[c]=1});calc()})});
+$("loc").addEventListener("change",function(){S.loc=$("loc").checked;calc()});
+document.querySelectorAll("[data-preset]").forEach(function(btn){btn.addEventListener("click",function(){
+  var p=PRE[btn.dataset.preset];S.vm=p[0];S.lm=p[1];
+  document.querySelectorAll("[data-preset]").forEach(function(x){x.setAttribute("aria-pressed",x===btn)});fill();calc()})});
+$("reset").addEventListener("click",function(){S=Object.assign({},DEF);
+  document.querySelectorAll("[data-preset]").forEach(function(x){x.setAttribute("aria-pressed",x.dataset.preset==="storico")});fill();calc()});
+fill();calc();
+</script>
+</body>
+</html>
