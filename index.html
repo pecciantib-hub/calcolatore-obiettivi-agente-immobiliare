@@ -73,9 +73,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <h2>Il tuo piano</h2>
       <div class="f"><label for="target">Guadagno mensile da raggiungere</label><div class="in"><input id="target" type="number" min="0" step="50"><span class="u">€</span></div></div>
       <div class="f"><label for="piano">Piano provvigionale</label><div class="in"><input id="piano" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="quota">Quota agente sulla provvigione agenzia</label><div class="in"><input id="quota" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="mA">Merito sull’acquisizione<small>Valore fisso</small></label><div class="in"><input id="mA" type="number" value="120" readonly><span class="u">%</span></div></div>
-      <div class="f"><label for="mV">Merito sulla vendita<small>Valore fisso</small></label><div class="in"><input id="mV" type="number" value="80" readonly><span class="u">%</span></div></div>
+      <p class="note">Valori fissi: quota 50% · merito acquisitore 120% · merito venditore 80%.</p>
       <div class="f"><label for="loc">Ti occupi anche di locazioni?</label><input id="loc" type="checkbox"></div>
     </section>
 
@@ -101,18 +99,36 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 
   <div>
     <section class="panel">
+      <div class="hero">
+        <div>
+          <div class="lbl">Guadagno con i tuoi obiettivi</div>
+          <div class="big num" id="earn">–</div>
+          <div class="lbl">su <span id="tgt">–</span> al mese</div>
+          <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
+          <span class="badge" id="badge">–</span>
+        </div>
+        <div>
+          <div class="lbl">Fatturato annuo da generare</div>
+          <div class="big num" id="fat">–</div>
+          <div class="lbl">per ottenere il guadagno desiderato, ogni mese per 12 mesi</div>
+          <p class="lbl" style="margin:10px 0 0">Differenza: <b id="diff" style="color:var(--ink)">–</b></p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Obiettivi mensili</h2>
+      <div class="f"><label for="gI">Incarichi da prendere e vendere<small>Transazioni da acquisitore · <span id="pI"></span> a incarico</small></label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
+      <div class="f"><label for="gV">Vendite da concludere<small>Transazioni da venditore · <span id="pV"></span> a vendita</small></label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
+      <div class="f" id="gLrow"><label for="gL">Locazioni da concludere<small><span id="pL"></span> a locazione</small></label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
+    </section>
+
+    <section class="panel">
       <h2>3.1 Fatturato e produzione</h2>
       <div class="f"><label>Quanto vuoi guadagnare tu, al lordo, nel 2027 (€)</label><b id="ui_guadagno_annuo">–</b></div>
       <div class="f"><label>Fatturato che vuoi incassare nel 2027 (€)</label><b id="ui_fatturato_annuo">–</b></div>
       <div class="f"><label>Produzione necessaria = fatturato × 1,12 (€)</label><b id="ui_produzione_annua" style="color:var(--accent)">–</b></div>
       <p class="note" style="margin-top:12px; font-size:13px"><i>Ricopia questi 3 dati nella tabella 3.1 del tuo questionario.</i></p>
-    </section>
-
-    <section class="panel">
-      <h2>Inserisci i tuoi OBIETTIVI MENSILI</h2>
-      <div class="f"><label for="gI">Incarichi da prendere e vendere</label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
-      <div class="f"><label for="gV">Vendite da concludere</label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
-      <div class="f" id="gLrow"><label for="gL">Locazioni da concludere</label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
     </section>
 
     <section class="panel">
@@ -129,6 +145,20 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
         </table>
       </div>
       <p class="note" style="margin-top:12px"><i>Ricopia questa tabella nella sezione 3.2 del tuo questionario.</i></p>
+      <p class="note">La produzione è ripartita tra vendite e affitti in proporzione ai rispettivi contributi al guadagno complessivo.</p>
+    </section>
+
+    <section class="panel">
+      <h2>Parametratore mensile/annuale</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%;font-size:13px;text-align:left;border-collapse:collapse">
+          <tr style="border-bottom:1px solid var(--line)"><th style="padding:6px 0">Attività</th><th style="padding:6px 0">Valore annuo</th><th style="padding:6px 0">Valore mensile</th></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Incarichi</td><td style="padding:6px 0">24</td><td style="padding:6px 0">2</td></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Vendite</td><td style="padding:6px 0">19</td><td style="padding:6px 0">1,58</td></tr>
+          <tr><td style="padding:6px 0">Locazioni</td><td style="padding:6px 0">7</td><td style="padding:6px 0">0,58</td></tr>
+        </table>
+      </div>
+      <p class="note">Valori informativi: il totale mensile corrisponde al valore annuo diviso 12.</p>
     </section>
 
     <section class="panel">
@@ -243,7 +273,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 </div>
 
 <script>
-var DEF={target:3453,piano:20,quota:50,mA:120,mV:80,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1,
+var DEF={target:3453,piano:20,loc:true,vm:9979,lm:1300,c9:40,c10:37,c11:9,c12:64,c13:51,gI:2,gV:1,gL:1,
   jobType:"onboard",step1:false,step2:false,step3:false,onboardSale:0,onboardRent:0,onboardSaleTransaction:0,
   juniorSale:0,juniorRent:0,juniorSaleClosed:0,juniorRentClosed:0,juniorRegime:"employment",license:"no",formula:"fixed",
   bonus3:false,bonus5:false,leadership:"none",tutorSteps:0,tutorTrans:0,smPeople:0,smTeamFat:0,respAgencyFat:0,respAgencyGoal:false};
@@ -253,11 +283,11 @@ var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
 var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
 var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
 function $(i){return document.getElementById(i)}
-var ids=["target","piano","quota","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
+var ids=["target","piano","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
   "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed",
   "step1","step2","step3","jobType","juniorRegime","license","formula","bonus3","bonus5","leadership",
   "tutorSteps","tutorTrans","smPeople","smTeamFat","respAgencyFat","respAgencyGoal"];
-var key={target:"target",piano:"piano",quota:"quota",mA:"mA",mV:"mV",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
+var key={target:"target",piano:"piano",vm:"vm",lm:"lm",c9:"c9",c10:"c10",c11:"c11",c12:"c12",c13:"c13",gI:"gI",gV:"gV",gL:"gL"};
 function fill(){ids.forEach(function(i){var el=$(i),value=S[key[i]||i];if(el.type==="checkbox")el.checked=value;else el.value=value});$("loc").checked=S.loc}
 function funnel(el,steps){
   var max=Math.max.apply(null,steps.map(function(s){return s[1]}))||1;
@@ -267,12 +297,15 @@ function funnel(el,steps){
   }).join("");
 }
 function calc(){
-  var p=S.piano/100,q=S.quota/100;
-  var cI=S.vm*q*(S.mA/100)*p, cV=S.vm*q*(S.mV/100)*p, cL=S.lm*p;
-  var gL=S.loc?S.gL:0;
+  var p=S.piano/100;
+  var cI=(S.vm/2)*1.2*p, cV=(S.vm/2)*0.8*p, cL=S.lm*p;
+  var gL=S.gL;
   var kI=S.gI*cI,kV=S.gV*cV,kL=gL*cL,tot=kI+kV+kL;
-  var oI=S.gI/(S.c13/100), qI=oI/(S.c10/100), nI=qI/(S.c9/100);
-  var oV=S.gV/(S.c12/100), qV=oV/(S.c11/100);
+  var oI=S.c13>0?S.gI/(S.c13/100):0;
+  var qI=S.c10>0?oI/(S.c10/100):0;
+  var nI=S.c9>0?qI/(S.c9/100):0;
+  var oV=S.c12>0?S.gV/(S.c12/100):0;
+  var qV=S.c11>0?oV/(S.c11/100):0;
   var oL=gL*1.5;
   var diff=tot-S.target, pct=S.target>0?tot/S.target*100:0;
   var fat=p>0?S.target/p*12:0;
@@ -351,22 +384,29 @@ function calc(){
       <b>Livello sbloccato 2028:</b> Livello ${dispLevel}
     `;
   }
-  $("ui_guadagno_annuo").textContent=eur.format(tot*12);
+  $("earn").textContent=eur2.format(tot);
+  $("tgt").textContent=eur.format(S.target);
+  $("fill").style.width=Math.min(100,pct)+"%";
+  var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
+  $("fat").textContent=eur.format(fat);
+  $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
+  $("pI").textContent=eur2.format(cI);$("pV").textContent=eur2.format(cV);$("pL").textContent=eur2.format(cL);
+  $("ui_guadagno_annuo").textContent=eur.format(S.target*12);
   $("ui_fatturato_annuo").textContent=eur.format(fat);
   $("ui_produzione_annua").textContent=eur.format(fat*1.12);
   $("t32_vm").textContent=eur.format(S.vm);
   $("t32_lm").textContent=eur.format(S.lm);
   $("t32_transV").textContent=nf.format((S.gI+S.gV)*12);
-  $("t32_transA").textContent=S.loc?nf.format(gL*12):"-";
-  var fatV=fat*(kI+kV)/tot||0;
-  var fatA=S.loc&&tot>0?(fat*kL/tot):0;
+  $("t32_transA").textContent=nf.format(gL*12);
+  var fatV=tot>0?fat*(kI+kV)/tot:0;
+  var fatA=tot>0?fat*kL/tot:0;
   $("t32_prodV").textContent=eur.format(fatV*1.12);
-  $("t32_prodA").textContent=S.loc?eur.format(fatA*1.12):"-";
-  $("t32_ratio").textContent="1 su "+(100/S.c13).toFixed(1);
+  $("t32_prodA").textContent=eur.format(fatA*1.12);
+  $("t32_ratio").textContent=S.c13>0?"1 su "+(100/S.c13).toFixed(1):"-";
   $("t32_incY").textContent=nf.format(oI*12);
-  $("t32_incYA").textContent=S.loc?nf.format(oL*12):"-";
+  $("t32_incYA").textContent=nf.format(oL*12);
   $("t32_incM").textContent=nf.format(oI);
-  $("t32_incMA").textContent=S.loc?nf.format(oL):"-";
+  $("t32_incMA").textContent=nf.format(oL);
   $("commissionGross").textContent=eur.format(gross);
   var commissionDetails=$("commissionDetails");
   if(S.jobType==="over60"){
@@ -381,9 +421,8 @@ function calc(){
   funnel($("fI"),[["Notizie da trovare",nI],["Acquisizioni da fare",qI],["Incarichi da prendere",oI],["Incarichi venduti",S.gI]]);
   funnel($("fV"),[["Visite da fare",qV],["Proposte da ritirare",oV],["Vendite concluse",S.gV]]);
   funnel($("fL"),[["Incarichi di affitto",oL],["Locazioni concluse",gL]]);
-  $("sL").className="panel"+(S.loc?"":" off");
-  $("gLrow").className="f"+(S.loc?"":" off");
-  $("gL").disabled=!S.loc;
+  $("sL").className="panel";
+  $("gLrow").className="f";
   $("onboardFields").hidden=S.jobType!=="onboard";
   $("juniorFields").hidden=S.jobType!=="junior";
   $("over60Fields").hidden=S.jobType!=="over60";
