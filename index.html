@@ -259,11 +259,11 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
             <option value="commission">Solo Provvigioni</option>
           </select>
         </div>
-        <div class="sub" style="margin-top:12px"><b>Bonus (Sezione 5.2)</b></div>
+        <div class="sub" style="margin-top:16px"><b>Bonus (Sezione 5.2)</b></div>
         <div class="f"><label for="bonus3">+3% sull'eccedenza trimestrale</label><input id="bonus3" type="checkbox"></div>
         <div class="f"><label for="bonus5">+5% superamento budget annuo</label><input id="bonus5" type="checkbox"></div>
 
-        <div class="sub" style="margin-top:12px"><b>Ruoli di Guida (Sezione 5.3)</b></div>
+        <div class="sub" style="margin-top:16px"><b>Ruoli di Guida (Sezione 5.3)</b></div>
         <div class="f">
           <label for="leadership">Ruolo</label>
           <select id="leadership">
@@ -277,11 +277,11 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 
         <div id="tutorFields" hidden>
           <div class="f"><label for="tutorSteps">Step superati dagli Onboard<small>150€ l'uno</small></label><div class="in"><input id="tutorSteps" type="number" min="0" step="1" value="0"></div></div>
-          <div class="f"><label for="tutorTrans">Transazioni chiuse dagli Onboard<small>10% (stimato 400€ base)</small></label><div class="in"><input id="tutorTrans" type="number" min="0" step="1" value="0"></div></div>
+          <div class="f"><label for="tutorTrans">Transazioni chiuse dagli Onboard<small>Stimato 400€ base (10%)</small></label><div class="in"><input id="tutorTrans" type="number" min="0" step="1" value="0"></div></div>
         </div>
         <div id="smFields" hidden>
           <div class="f"><label for="smPeople">Persone coordinate<small>100€ al mese / cad.</small></label><div class="in"><input id="smPeople" type="number" min="0" step="1" value="0"></div></div>
-          <div class="f"><label for="smTeamFat">Fatturato annuo del team<small>2% eccedenza (stima sul totale)</small></label><div class="in"><input id="smTeamFat" type="number" min="0" step="1000" value="0"><span class="u">€</span></div></div>
+          <div class="f"><label for="smTeamFat">Fatturato annuo del team<small>2% eccedenza</small></label><div class="in"><input id="smTeamFat" type="number" min="0" step="1000" value="0"><span class="u">€</span></div></div>
         </div>
         <div id="respFields" hidden>
           <div class="f"><label for="respAgencyFat">Fatturato annuo agenzia</label><div class="in"><input id="respAgencyFat" type="number" min="0" step="1000" value="0"><span class="u">€</span></div></div>
@@ -289,14 +289,21 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
         </div>
       </div>
 
-      <div class="commission-result">
+      <div class="commission-result" style="margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)">
         <div class="hero">
           <div>
             <div class="lbl">Guadagno Lordo Stimato 2027</div>
             <div class="big num" id="commissionGross">–</div>
-            <p class="commission-details" id="commissionDetails" hidden></p>
           </div>
           <div><span class="badge" id="commissionBadge">–</span></div>
+        </div>
+        <div id="commissionDetails" style="margin-top:12px;font-size:13.5px;line-height:1.6" hidden>
+          <b>Ricopia questi valori nella tabella 5.4 del questionario:</b><br>
+          • Percentuale provvigionale: <span id="p5_perc" style="font-weight:600;color:var(--ink)"></span><br>
+          • Provvigioni stimate: <span id="p5_provv" style="font-weight:600;color:var(--ink)"></span><br>
+          • + Fisso annuale: <span id="p5_fisso" style="font-weight:600;color:var(--ink)"></span><br>
+          • + Compensi ruolo di guida: <span id="p5_guida" style="font-weight:600;color:var(--ink)"></span><br>
+          • Livello sbloccato (2028): <span id="p5_liv" style="font-weight:600;color:var(--ink)"></span>
         </div>
       </div>
   </div>
@@ -358,40 +365,47 @@ function calc(){
     var variable=tierTotal(S.juniorSale,100,150,200)+tierTotal(S.juniorRent,50,100,150)
       +tierTotal(S.juniorSaleClosed,250,400,500)+tierTotal(S.juniorRentClosed,100,150,200);
     gross=12000+Math.max(0,variable-12000)*(S.juniorRegime==="vat"?0.20:0.12);
-  }else{
+  }else if(S.jobType==="over60"){
     var hasLicense = S.license === "yes";
     var hasFixed = S.formula === "fixed";
 
     var levels = [
-      { t: 60000, f: 1000, pNo: 4, pNoS: 20, pYes: 7, pYesS: 23 },
-      { t: 90000, f: 1100, pNo: 7, pNoS: 22, pYes: 10, pYesS: 25 },
-      { t: 120000, f: 1300, pNo: 9, pNoS: 24, pYes: 13, pYesS: 28 },
-      { t: 150000, f: 1500, pNo: 11, pNoS: 26, pYes: 17, pYesS: 32 },
-      { t: 180000, f: 1800, pNo: 13, pNoS: 28, pYes: 21, pYesS: 35 },
-      { t: 210000, f: 2000, pNo: 13, pNoS: 28, pYes: 23, pYesS: 38 },
-      { t: 240000, f: 2400, pNo: 13, pNoS: 28, pYes: 25, pYesS: 40 },
-      { t: 280000, f: 0, pNo: 13, pNoS: 28, pYes: 45, pYesS: 45 }
+      { threshold: 60000, fixed: 1000, provNoPat: 4, provNoPatSolo: 20, provPat: 7, provPatSolo: 23 },
+      { threshold: 90000, fixed: 1100, provNoPat: 7, provNoPatSolo: 22, provPat: 10, provPatSolo: 25 },
+      { threshold: 120000, fixed: 1300, provNoPat: 9, provNoPatSolo: 24, provPat: 13, provPatSolo: 28 },
+      { threshold: 150000, fixed: 1500, provNoPat: 11, provNoPatSolo: 26, provPat: 17, provPatSolo: 32 },
+      { threshold: 180000, fixed: 1800, provNoPat: 13, provNoPatSolo: 28, provPat: 21, provPatSolo: 35 },
+      { threshold: 210000, fixed: 2000, provNoPat: 13, provNoPatSolo: 28, provPat: 23, provPatSolo: 38 },
+      { threshold: 240000, fixed: 2400, provNoPat: 13, provNoPatSolo: 28, provPat: 25, provPatSolo: 40 },
+      { threshold: 280000, fixed: 0, provNoPat: 13, provNoPatSolo: 28, provPat: 45, provPatSolo: 45 }
     ];
 
-    var L = 0;
-    for (var i = 7; i >= 0; i--) { if (fat >= levels[i].t) { L = i; break; } }
-
-    if (L === 7 && hasLicense) { hasFixed = false; }
-
-    var curLvl = levels[L];
-    var baseRate = hasFixed ? (hasLicense ? curLvl.pYes : curLvl.pNo) : (hasLicense ? curLvl.pYesS : curLvl.pNoS);
-    var fixedMonthly = hasFixed ? curLvl.f : 0;
-
-    var dispLevel = (!hasLicense && L > 4) ? 5 : L + 1;
-    if (!hasLicense && L > 4) {
-      fixedMonthly = hasFixed ? 1800 : 0;
+    var currentLevelIndex = 0;
+    for (var i = 7; i >= 0; i--) {
+      if (fat >= levels[i].threshold) {
+        currentLevelIndex = i;
+        break;
+      }
     }
+
+    if (currentLevelIndex === 7 && hasLicense) { hasFixed = false; }
+    $("formula").value = hasFixed ? "fixed" : "commission";
+
+    var curLvl = levels[currentLevelIndex];
+    var baseRate = hasFixed
+      ? (hasLicense ? curLvl.provPat : curLvl.provNoPat)
+      : (hasLicense ? curLvl.provPatSolo : curLvl.provNoPatSolo);
 
     if (S.bonus3) baseRate += 3;
     if (S.bonus5) baseRate += 5;
 
-    var guideFixed = 0;
-    var guideVar = 0;
+    var fixedMonthly = hasFixed ? curLvl.fixed : 0;
+    if (!hasLicense && currentLevelIndex > 4) {
+      fixedMonthly = hasFixed ? 1800 : 0;
+    }
+    var totalFixedYearly = fixedMonthly * 12;
+
+    var guideFixed = 0, guideVar = 0;
     var tutorComp = (S.tutorSteps * 150) + (S.tutorTrans * 400);
 
     if (S.leadership === "tutor") {
@@ -408,18 +422,16 @@ function calc(){
     }
 
     var totalGuideComp = guideFixed + guideVar;
-    var totalFixedYearly = fixedMonthly * 12;
     var totalCommissions = fat * (baseRate / 100);
 
     gross = totalCommissions + totalFixedYearly + totalGuideComp;
 
-    window.agencyBreakdown = `
-      <b>Percentuale provvigionale base:</b> ${baseRate}%<br>
-      <b>Provvigioni stimate:</b> ${eur2.format(totalCommissions)}<br>
-      <b>Fisso annuale:</b> ${eur2.format(totalFixedYearly)}<br>
-      <b>Compensi da guida:</b> ${eur2.format(totalGuideComp)}<br>
-      <b>Livello sbloccato 2028:</b> Livello ${dispLevel}
-    `;
+    var dispLevel = (!hasLicense && currentLevelIndex > 4) ? 5 : (currentLevelIndex + 1);
+    $("p5_perc").textContent = baseRate + "%";
+    $("p5_provv").textContent = eur2.format(totalCommissions);
+    $("p5_fisso").textContent = eur2.format(totalFixedYearly);
+    $("p5_guida").textContent = eur2.format(totalGuideComp);
+    $("p5_liv").textContent = "Livello " + dispLevel;
   }
   $("earn").textContent=eur2.format(tot);
   $("tgt").textContent=eur.format(S.target);
@@ -446,12 +458,7 @@ function calc(){
   $("t32_incMA").textContent=nf.format(oL);
   $("commissionGross").textContent=eur.format(gross);
   var commissionDetails=$("commissionDetails");
-  if(S.jobType==="over60"){
-    commissionDetails.innerHTML=window.agencyBreakdown;
-    commissionDetails.hidden=false;
-  }else{
-    commissionDetails.hidden=true;
-  }
+  commissionDetails.hidden=S.jobType!=="over60";
   var covered=gross>=S.target*12;
   var cb=$("commissionBadge");cb.textContent=covered?"Obiettivo Coperto!":"Attenzione: le provvigioni non coprono il guadagno desiderato.";cb.className="badge"+(covered?"":" low");
   $("kI").textContent=eur2.format(kI);$("kV").textContent=eur2.format(kV);$("kL").textContent=eur2.format(kL);
