@@ -101,38 +101,34 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 
   <div>
     <section class="panel">
-      <div class="hero">
-        <div>
-          <div class="lbl">Guadagno con i tuoi obiettivi</div>
-          <div class="big num" id="earn">–</div>
-          <div class="lbl">su <span id="tgt">–</span> al mese</div>
-          <div class="track" aria-hidden="true"><div class="fill" id="fill"></div></div>
-          <span class="badge" id="badge">–</span>
-        </div>
-        <div>
-          <div class="lbl">Fatturato annuo da generare</div>
-          <div class="big num" id="fat">–</div>
-          <div class="lbl">per ottenere il guadagno desiderato, ogni mese per 12 mesi</div>
-          <p class="note">Produzione stimata (+12%): <b id="production">–</b></p>
-          <p class="lbl" style="margin:10px 0 0">Differenza: <b id="diff" style="color:var(--ink)">–</b></p>
-        </div>
+      <h2>3.1 Fatturato e produzione</h2>
+      <div class="f"><label>Quanto vuoi guadagnare tu, al lordo, nel 2027 (€)</label><b id="ui_guadagno_annuo">–</b></div>
+      <div class="f"><label>Fatturato che vuoi incassare nel 2027 (€)</label><b id="ui_fatturato_annuo">–</b></div>
+      <div class="f"><label>Produzione necessaria = fatturato × 1,12 (€)</label><b id="ui_produzione_annua" style="color:var(--accent)">–</b></div>
+      <p class="note" style="margin-top:12px; font-size:13px"><i>Ricopia questi 3 dati nella tabella 3.1 del tuo questionario.</i></p>
+    </section>
+
+    <section class="panel">
+      <h2>Inserisci i tuoi OBIETTIVI MENSILI</h2>
+      <div class="f"><label for="gI">Incarichi da prendere e vendere</label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
+      <div class="f"><label for="gV">Vendite da concludere</label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
+      <div class="f" id="gLrow"><label for="gL">Locazioni da concludere</label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
+    </section>
+
+    <section class="panel">
+      <h2>3.2 Da dove arriva la produzione (Riepilogo Annuo)</h2>
+      <div style="overflow-x:auto;">
+        <table style="width:100%; font-size:13px; text-align:left; border-collapse:collapse;">
+          <tr style="border-bottom:1px solid var(--line)"><th style="padding:6px 0"></th><th style="padding:6px 0">Vendite</th><th style="padding:6px 0">Affitti</th></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Provvigione media per transazione (€)</td><td id="t32_vm"></td><td id="t32_lm"></td></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Quante transazioni ti servono nel 2027</td><td id="t32_transV"></td><td id="t32_transA"></td></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Produzione totale (€)</td><td id="t32_prodV"></td><td id="t32_prodA"></td></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Su quanti incarichi chiudi 1 transazione?</td><td id="t32_ratio"></td><td>-</td></tr>
+          <tr style="border-bottom:1px solid var(--line)"><td style="padding:6px 0">Quanti incarichi ti servono nel 2027</td><td id="t32_incY"></td><td id="t32_incYA"></td></tr>
+          <tr><td style="padding:6px 0">Incarichi al mese</td><td id="t32_incM"></td><td id="t32_incMA"></td></tr>
+        </table>
       </div>
-    </section>
-
-    <section class="panel">
-      <h2>Obiettivi mensili</h2>
-      <div class="f"><label for="gI">Incarichi da prendere e vendere<small>Transazioni da acquisitore · <span id="pI"></span> a incarico</small></label><div class="in"><input id="gI" type="number" min="0" step="1"></div></div>
-      <div class="f"><label for="gV">Vendite da concludere<small>Transazioni da venditore · <span id="pV"></span> a vendita</small></label><div class="in"><input id="gV" type="number" min="0" step="1"></div></div>
-      <div class="f" id="gLrow"><label for="gL">Locazioni da concludere<small><span id="pL"></span> a locazione</small></label><div class="in"><input id="gL" type="number" min="0" step="1"></div></div>
-    </section>
-
-    <section class="panel">
-      <h2>I tuoi Totali Annuali 2027</h2>
-      <div class="sub"><span>Vendite totali nell’anno</span><b id="annualSales">–</b></div>
-      <div class="sub" id="annualRentRow"><span>Locazioni totali nell’anno</span><b id="annualRents">–</b></div>
-      <div class="sub"><span>Produzione totale generata</span><b id="annualProduction">–</b></div>
-      <div class="sub"><span>Incarichi totali da prendere</span><b><span id="annualAssignments">–</span> <span class="lbl">(pari a <span id="monthlyAssignments">–</span> al mese)</span></b></div>
-      <div class="sub"><span>Tasso di conversione (Incarichi → Vendite)</span><b>51%</b></div>
+      <p class="note" style="margin-top:12px"><i>Ricopia questa tabella nella sezione 3.2 del tuo questionario.</i></p>
     </section>
 
     <section class="panel">
@@ -355,19 +351,22 @@ function calc(){
       <b>Livello sbloccato 2028:</b> Livello ${dispLevel}
     `;
   }
-  $("earn").textContent=eur2.format(tot);
-  $("tgt").textContent=eur.format(S.target);
-  $("fill").style.width=Math.min(100,pct)+"%";
-  var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
-  $("fat").textContent=eur.format(fat);
-  $("production").textContent=eur.format(fat*1.12);
-  $("annualSales").textContent=nf.format(S.gV*12);
-  $("annualRents").textContent=nf.format(gL*12);
-  $("annualRentRow").hidden=!S.loc;
-  $("annualProduction").textContent=eur.format(fat*1.12);
-  $("annualAssignments").textContent=nf.format(oI*12);
-  $("monthlyAssignments").textContent=nf.format(oI);
-  $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
+  $("ui_guadagno_annuo").textContent=eur.format(tot*12);
+  $("ui_fatturato_annuo").textContent=eur.format(fat);
+  $("ui_produzione_annua").textContent=eur.format(fat*1.12);
+  $("t32_vm").textContent=eur.format(S.vm);
+  $("t32_lm").textContent=eur.format(S.lm);
+  $("t32_transV").textContent=nf.format((S.gI+S.gV)*12);
+  $("t32_transA").textContent=S.loc?nf.format(gL*12):"-";
+  var fatV=fat*(kI+kV)/tot||0;
+  var fatA=S.loc&&tot>0?(fat*kL/tot):0;
+  $("t32_prodV").textContent=eur.format(fatV*1.12);
+  $("t32_prodA").textContent=S.loc?eur.format(fatA*1.12):"-";
+  $("t32_ratio").textContent="1 su "+(100/S.c13).toFixed(1);
+  $("t32_incY").textContent=nf.format(oI*12);
+  $("t32_incYA").textContent=S.loc?nf.format(oL*12):"-";
+  $("t32_incM").textContent=nf.format(oI);
+  $("t32_incMA").textContent=S.loc?nf.format(oL):"-";
   $("commissionGross").textContent=eur.format(gross);
   var commissionDetails=$("commissionDetails");
   if(S.jobType==="over60"){
@@ -378,7 +377,6 @@ function calc(){
   }
   var covered=gross>=S.target*12;
   var cb=$("commissionBadge");cb.textContent=covered?"Obiettivo Coperto!":"Attenzione: le provvigioni non coprono il guadagno desiderato.";cb.className="badge"+(covered?"":" low");
-  $("pI").textContent=eur2.format(cI);$("pV").textContent=eur2.format(cV);$("pL").textContent=eur2.format(cL);
   $("kI").textContent=eur2.format(kI);$("kV").textContent=eur2.format(kV);$("kL").textContent=eur2.format(kL);
   funnel($("fI"),[["Notizie da trovare",nI],["Acquisizioni da fare",qI],["Incarichi da prendere",oI],["Incarichi venduti",S.gI]]);
   funnel($("fV"),[["Visite da fare",qV],["Proposte da ritirare",oV],["Vendite concluse",S.gV]]);
