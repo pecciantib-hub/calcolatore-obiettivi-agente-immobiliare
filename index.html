@@ -43,6 +43,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
 .badge{display:inline-block;padding:2px 9px;border-radius:99px;font-size:13px;font-weight:600;background:var(--accent-soft);color:var(--ok)}
 .badge.low{background:var(--warn);color:#013351}
 .commission-result{margin-top:16px;padding:14px;border:1px solid var(--line);border-radius:8px;background:var(--bg)}
+.commission-details{margin:8px 0 0;font-size:13px;font-weight:600}
 .fun{margin-top:6px}
 .step{display:grid;grid-template-columns:150px 1fr 58px;align-items:center;gap:10px;padding:5px 0;font-size:14px}
 .step .b{height:22px;background:var(--bar);border-radius:3px;min-width:3px;transition:width .25s}
@@ -111,6 +112,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
           <div class="lbl">Fatturato annuo da generare</div>
           <div class="big num" id="fat">–</div>
           <div class="lbl">per ottenere il guadagno desiderato, ogni mese per 12 mesi</div>
+          <p class="note">Produzione stimata (+12%): <b id="production">–</b></p>
           <p class="lbl" style="margin:10px 0 0">Differenza: <b id="diff" style="color:var(--ink)">–</b></p>
         </div>
       </div>
@@ -197,6 +199,7 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
           <div>
             <div class="lbl">Guadagno Lordo Stimato 2027</div>
             <div class="big num" id="commissionGross">–</div>
+            <p class="commission-details" id="commissionDetails" hidden></p>
           </div>
           <div><span class="badge" id="commissionBadge">–</span></div>
         </div>
@@ -259,8 +262,27 @@ function calc(){
   $("fill").style.width=Math.min(100,pct)+"%";
   var b=$("badge");b.textContent=nf.format(pct)+"% dell’obiettivo";b.className="badge"+(pct<99.5?" low":"");
   $("fat").textContent=eur.format(fat);
+  $("production").textContent=eur.format(fat*1.12);
   $("diff").textContent=(diff>=0?"+":"−")+eur2.format(Math.abs(diff));
   $("commissionGross").textContent=eur.format(gross);
+  var commissionDetails=$("commissionDetails");
+  if(S.jobType==="over60"){
+    var rate=S.formula==="fixed"?(S.license==="yes"?7:4):(S.license==="yes"?23:20);
+    var level;
+    if(fat<60000)level=0;
+    else if(fat<90000)level=1;
+    else if(fat<120000)level=2;
+    else if(fat<150000)level=3;
+    else if(fat<180000)level=4;
+    else if(fat<210000)level=5;
+    else if(fat<240000)level=S.license==="yes"?6:5;
+    else if(fat<280000)level=S.license==="yes"?7:5;
+    else level=S.license==="yes"?8:5;
+    commissionDetails.textContent="Percentuale: "+rate+"% | Livello sbloccato per il 2028: Livello "+level;
+    commissionDetails.hidden=false;
+  }else{
+    commissionDetails.hidden=true;
+  }
   var covered=gross>=S.target*12;
   var cb=$("commissionBadge");cb.textContent=covered?"Obiettivo Coperto!":"Attenzione: le provvigioni non coprono il guadagno desiderato.";cb.className="badge"+(covered?"":" low");
   $("pI").textContent=eur2.format(cI);$("pV").textContent=eur2.format(cV);$("pL").textContent=eur2.format(cL);
