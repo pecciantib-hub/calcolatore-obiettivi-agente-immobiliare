@@ -74,8 +74,8 @@ button[aria-pressed=true]{background:var(--ink);color:var(--surface);border-colo
       <div class="f"><label for="target">Guadagno mensile da raggiungere</label><div class="in"><input id="target" type="number" min="0" step="50"><span class="u">€</span></div></div>
       <div class="f"><label for="piano">Piano provvigionale</label><div class="in"><input id="piano" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
       <div class="f"><label for="quota">Quota agente sulla provvigione agenzia</label><div class="in"><input id="quota" type="number" min="0" max="100" step="1"><span class="u">%</span></div></div>
-      <div class="f"><label for="mA">Merito sull’acquisizione<small>Sei più bravo? Sopra 100%</small></label><div class="in"><input id="mA" type="number" min="0" step="5"><span class="u">%</span></div></div>
-      <div class="f"><label for="mV">Merito sulla vendita<small>Sotto 100% se pesa meno</small></label><div class="in"><input id="mV" type="number" min="0" step="5"><span class="u">%</span></div></div>
+      <div class="f"><label for="mA">Merito sull’acquisizione<small>Valore fisso</small></label><div class="in"><input id="mA" type="number" value="120" readonly><span class="u">%</span></div></div>
+      <div class="f"><label for="mV">Merito sulla vendita<small>Valore fisso</small></label><div class="in"><input id="mV" type="number" value="80" readonly><span class="u">%</span></div></div>
       <div class="f"><label for="loc">Ti occupi anche di locazioni?</label><input id="loc" type="checkbox"></div>
     </section>
 
@@ -257,7 +257,7 @@ var nf=new Intl.NumberFormat("it-IT",{maximumFractionDigits:1});
 var eur=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",maximumFractionDigits:0});
 var eur2=new Intl.NumberFormat("it-IT",{style:"currency",currency:"EUR",minimumFractionDigits:2,maximumFractionDigits:2});
 function $(i){return document.getElementById(i)}
-var ids=["target","piano","quota","mA","mV","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
+var ids=["target","piano","quota","vm","lm","c9","c10","c11","c12","c13","gI","gV","gL",
   "onboardSale","onboardRent","onboardSaleTransaction","juniorSale","juniorRent","juniorSaleClosed","juniorRentClosed",
   "step1","step2","step3","jobType","juniorRegime","license","formula","bonus3","bonus5","leadership",
   "tutorSteps","tutorTrans","smPeople","smTeamFat","respAgencyFat","respAgencyGoal"];
